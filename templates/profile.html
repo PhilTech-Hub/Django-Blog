@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Your Profile</h2>
+    <img src="{{ user.userprofile.profile_image.url }}" alt="{{ user.username }}'s profile image" class="profile-image">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Profile</button>
+    </form>
+{% endblock %}

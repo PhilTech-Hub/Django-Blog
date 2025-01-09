@@ -1,0 +1,40 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="blog-header">All Blogs</h1>
+
+<div class="blog-container">  <!-- Container for all blog posts -->
+    {% for blog in blogs %}
+    <div class="blog-post">
+        <div class="blog-post-top">
+            {% if blog.featured_image %}
+            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }} featured image" class="featured-image">
+            {% endif %}
+            <h2>{{ blog.title }}</h2>
+        </div>
+        <div class="blog-post-content">
+            <a href="{% url 'update_blog' blog.pk %}"><button>Edit</button></a> |
+            <a href="{% url 'delete_blog' blog.pk %}"><button>Delete</button></a>
+            <p>{{ blog.content|truncatewords:30 }}</p>
+        </div>
+        <div class="blog-post-bottom">
+            <p>
+                <img src="{{ blog.author.profile_image.url }}" alt="{{ blog.author.user.username }}'s profile"
+                    class="profile-image">
+                By: {{ blog.author.user.username }} on {{ blog.created_at|date:"F d, Y" }} at {{ blog.created_at|time:"h:i a" }}
+            </p>
+            {% if user.is_authenticated and blog.author.user == user %}
+            <a href="{% url 'view_blog' blog.pk %}">View</a> |
+            <a href="{% url 'comment_blog' blog.pk %}">Comment</a> |
+            <a href="{% url 'like_blog' blog.pk %}">Like</a> |
+            <a href="{% url 'delete_blog' blog.pk %}">Share</a>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No blog posts available.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

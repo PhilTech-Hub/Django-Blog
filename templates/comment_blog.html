@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Comment on: {{ blog.title }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="comment" placeholder="Write your comment here..."></textarea>
+    <button type="submit">Post Comment</button>
+</form>
+{% endblock %}

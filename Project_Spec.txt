@@ -1,0 +1,46 @@
+    --------------------____BELOW IS THE PROJECT SPEC:____-------------------
+
+
+
+
+
+The Project structure:
+django_blog/
+├── blog/
+│   ├── migrations/
+│   │   ├── __init__.py
+│   │   └── ... (migration files)
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── media/
+│   ├── blog_images/
+│   │   └── ... (uploaded blog images)
+│   └── profile_images/
+│       └── default_profile.jpg
+├── static/
+│   └── css/
+│       └── styles.css
+├── templates/
+│   ├── base.html
+│   ├── home.html
+│   ├── register.html
+│   ├── profile.html
+│   ├── add_blog.html
+│   ├── update_blog.html
+│   ├── delete_blog.html
+│   └── registration/
+│       ├── login.html
+│       └── logged_out.html
+├── db.sqlite3
+├── manage.py
+└── myblog/
+    ├── __init__.py
+    ├── asgi.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py

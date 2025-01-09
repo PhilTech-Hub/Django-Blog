@@ -21,7 +21,7 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    featured_image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    featured_image = models.ImageField(upload_to='featured_image/', blank=True, null=True)
     likes = models.IntegerField(default=0)  # Add this line to store like count
 
     def __str__(self):

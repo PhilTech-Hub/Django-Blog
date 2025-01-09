@@ -1,5 +1,8 @@
     --------------------____BELOW IS THE PROJECT SPEC:____-------------------
 
+To run database migrations use: 
+python manage.py makemigrations
+python manage.py migrate
 
 
 

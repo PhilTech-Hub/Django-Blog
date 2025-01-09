@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 import dj_database_url
+from decouple import config
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,6 +109,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where static files will b
 # Media files (Uploaded files like images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/data/media/'  # Directory to store uploaded files
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = 'https://res.cloudinary.com/dv5my8jvf/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'

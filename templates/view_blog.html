@@ -5,6 +5,22 @@
 <p>{{ blog.content }}</p>
 <p>By: {{ blog.author.user.username }} on {{ blog.created_at|date:"F d, Y" }} at {{ blog.created_at|time:"h:i a" }}</p>
 
+<!-- Display Likes -->
+<div>
+    <span>{{ like_count }} Likes</span>
+    {% if user.is_authenticated %}
+        {% if user_has_liked %}
+            <p>You have already liked this blog!</p>
+        {% else %}
+            <a href="{% url 'like_blog' blog.pk %}">
+                ❤️ Like
+            </a>
+        {% endif %}
+    {% else %}
+        <p>You must be logged in to like this blog.</p>
+    {% endif %}
+</div>
+
 <!-- Display Comments -->
 <h3>Comments</h3>
 {% for comment in comments %}
@@ -17,7 +33,7 @@
 
 <!-- Comment Form -->
 {% if user.is_authenticated %}
-    <h3>Add a Comment</h3>
+    <h3>Leave a Comment</h3>
     <form method="POST" action="{% url 'comment_blog' blog.pk %}">
         {% csrf_token %}
         <textarea name="comment" placeholder="Write your comment here..."></textarea>

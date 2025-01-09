@@ -1,10 +1,9 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
 <h1 class="blog-header">All Blogs</h1>
 
-<div class="blog-container">  <!-- Container for all blog posts -->
+<div class="blog-container"> <!-- Container for all blog posts -->
     {% for blog in blogs %}
     <div class="blog-post">
         <div class="blog-post-top">
@@ -22,19 +21,57 @@
             <p>
                 <img src="{{ blog.author.profile_image.url }}" alt="{{ blog.author.user.username }}'s profile"
                     class="profile-image">
-                By: {{ blog.author.user.username }} on {{ blog.created_at|date:"F d, Y" }} at {{ blog.created_at|time:"h:i a" }}
+                By: {{ blog.author.user.username }} on {{ blog.created_at|date:"F d, Y" }} at
+                {{blog.created_at|time:"h:i a" }}
             </p>
+
+            <p class="like_comment">Likes: {{ blog.total_likes }} | Comments: {{ blog.total_comments }}</p>
+
             {% if user.is_authenticated and blog.author.user == user %}
             <a href="{% url 'view_blog' blog.pk %}">View</a> |
             <a href="{% url 'comment_blog' blog.pk %}">Comment</a> |
             <a href="{% url 'like_blog' blog.pk %}">Like</a> |
-            <a href="{% url 'delete_blog' blog.pk %}">Share</a>
+            <a href="#" onclick="openSharePopup(event)">Share</a>
+
+            <!-- Popup Content (Hidden by Default) -->
+            <div id="share-popup">
+                <h3>Share on:</h3>
+                <ul>
+                    <li><a href="https://www.linkedin.com" target="_blank">LinkedIn</a></li>
+                    <li><a href="https://www.campo.com" target="_blank">Campo</a></li>
+                    <li><a href="https://www.whatsapp.com" target="_blank">WhatsApp</a></li>
+                    <li><a href="https://www.facebook.com" target="_blank">Facebook</a></li>
+                    <li><a href="https://www.twitter.com" target="_blank">Twitter</a></li>
+                    <li><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
+                    <li><a href="https://www.pinterest.com" target="_blank">Pinterest</a></li>
+                </ul>
+            </div>
+
+
+
             {% endif %}
         </div>
+        
+
     </div>
     {% empty %}
     <p>No blog posts available.</p>
     {% endfor %}
+
+    <div class="featured-blogs">
+        <h2>Featured Blogs</h2>
+        {% for blog in featured_blogs %}
+        <div class="blog-entry">
+            <h3>{{ blog.title |truncatewords:10 }}</h3>
+            <p>{{ blog.content|truncatewords:10 }}</p>
+            <a href="{% url 'view_blog' blog.pk %}" class="read-more-btn">Read More &raquo;&raquo;</a>
+        </div>
+        {% empty %}
+        <p>No featured blogs available at the moment with more than five likes.</p>
+        {% endfor %}
+    </div>
+    
+    
 </div>
 
 {% endblock %}

@@ -4,13 +4,34 @@ body {
     padding: 0;
 }
 
+.messages {
+    list-style: none;
+    padding: 0;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
 header {
-    background-color: #333;
-    padding: 10px 0;
+    background-color: #0667cf;
+    padding: 10px;
     position: fixed;
     top: 0px;
     width: 100%;
     height: 30px;
+    z-index: 4;
 }
 
 nav {
@@ -43,6 +64,7 @@ main {
 .blog-header{
     margin-top: 100px;
     color: rgb(218, 118, 5);
+    text-decoration: underline;
 }
 .blog-container {
     margin-top: 100px;
@@ -69,6 +91,7 @@ main {
     align-items: center;  /* Align elements horizontally */
     margin-bottom: 20px;
     color: rgb(30, 30, 212);
+    padding-bottom: 20px;
     gap: 20px;
     border-bottom: 2px solid rgba(71, 132, 212, 0.5);
 }
@@ -77,6 +100,9 @@ main {
     padding: 10px 0;
 }
 
+.like_comment{
+    color: rgb(218, 118, 5);
+}
 /* Profile image styling */
 .profile-image {
     max-width: 50px;
@@ -97,26 +123,113 @@ main {
     }
 }
 
+/* Overlay to cover the screen */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(29, 119, 194, 0.5); /* Semi-transparent black */
+    z-index: 999;
+}
 
-.messages {
+/* Popup Styling */
+#share-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 10px;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 150px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+    overflow-y: auto; /* Allow scrolling inside the popup */
+}
+
+/* Scrollable list in popup */
+#share-popup ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-.messages li {
+#share-popup ul li {
+    margin: 10px 0;
+}
+
+#share-popup ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+#share-popup ul li a:hover {
+    color: #007bff;
+}
+
+/* Featured Blogs */
+.featured-blogs {
+    position: relative;
+    bottom: 905px;
+    right: 120px;
+    width: 300px;
+    /* margin-top: 30px; */
+    padding: 15px;
+    background-color: rgba(199, 155, 118, 0.473);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.featured-blogs h2 {
+    margin-bottom: 15px;
+    color: #033db8;
+    text-align: center;
+}
+
+.blog-entry {
+    margin-bottom: 20px;
     padding: 10px;
-    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.messages li.success {
-    background-color: #d4edda;
-    color: #155724;
+.blog-entry h3 {
+    margin: 0;
+    color: #007bff;
 }
 
-.messages li.error {
-    background-color: #f8d7da;
-    color: #721c24;
+.blog-entry p {
+    margin-top: 5px;
+    color: #666;
 }
+
+.read-more-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    width: 120px;
+    height: 20px;
+    background-color: white;
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.read-more-btn:hover {
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+}
+
+
 
 
 footer {

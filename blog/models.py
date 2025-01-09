@@ -36,6 +36,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.blog.title}"
+    
+class Like(models.Model):
+    blog = models.ForeignKey(Blog, related_name='blog_likes', on_delete=models.CASCADE)  # Changed related_name to 'blog_likes'
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('blog', 'user')  # Prevent users from liking the same blog more than once
+
+    def __str__(self):
+        return f"Like by {self.user.username} on {self.blog.title}"
 
 
 

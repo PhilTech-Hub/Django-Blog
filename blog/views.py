@@ -1,23 +1,44 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Blog, UserProfile, Comment
+from .models import Blog, UserProfile, Comment, Like
 from .forms import UserProfileForm, BlogForm, UserRegistrationForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib import messages
+from django.db.models import Count, Q
 
-
-# Create your views here.
 
 # Home Page View
+# Home Page View
 def home_view(request):
-    # Fetch all blogs, ordered by the most recent
-    blogs = Blog.objects.all().order_by('-created_at')  # Order blogs by 'created_at' descending
-    return render(request, 'home.html', {'blogs': blogs})
+    # Get all blogs ordered by creation date
+    blogs = Blog.objects.all().order_by('-created_at')
+
+    # Fetch blogs with at least one like or one comment
+    featured_blogs = Blog.objects.annotate(
+        num_likes=Count('blog_likes'),
+        num_comments=Count('comments')
+    ).filter(
+        Q(num_likes__gt=0) | Q(num_comments__gt=0)
+    ).order_by('-num_likes', '-num_comments')[:5]
+
+    # Add total likes and comments for each blog
+    for blog in blogs:
+        blog.total_likes = blog.blog_likes.count()  # Count all likes
+        blog.total_comments = blog.comments.count()  # Count all comments
+
+    return render(request, 'home.html', {'blogs': blogs, 'featured_blogs': featured_blogs})
+
+
 
 # View to display blog details and its comments
 def view_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
-    comments = blog.comments.all()  # Using the 'comments' related name
+    comments = blog.comments.all()
+    like_count = blog.blog_likes.count()  # Total likes
+    # Check if the user has already liked the blog
+    user_has_liked = False
+    if request.user.is_authenticated:
+        user_has_liked = blog.blog_likes.filter(user=request.user).exists()
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -30,7 +51,14 @@ def view_blog(request, pk):
     else:
         form = CommentForm()
 
-    return render(request, 'view_blog.html', {'blog': blog, 'comments': comments, 'form': form})
+    return render(request, 'view_blog.html', {
+        'blog': blog,
+        'comments': comments,
+        'form': form,
+        'like_count': like_count,
+        'user_has_liked': user_has_liked,
+    })
+
 
 # Comment on Blog
 @login_required
@@ -44,27 +72,34 @@ def comment_blog(request, pk):
             return redirect('view_blog', pk=blog.pk)
         else:
             messages.error(request, 'Please write something before posting your comment.')
-    
-    return redirect('view_blog', pk=blog.pk)  # If GET, just redirect back to the blog view
 
-# Like Blog
+    return redirect('view_blog', pk=blog.pk)
+
+
+# Like or Unlike Blog
 @login_required
 def like_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
-    # Logic for liking the blog, for simplicity, just increment a like counter
-    blog.likes += 1
-    blog.save()
-    messages.success(request, 'You liked the blog.')
-    return redirect('view_blog', pk=blog.pk)
+    existing_like = blog.blog_likes.filter(user=request.user).first()
+
+    if existing_like:
+        existing_like.delete()  # Unlike the blog
+        messages.info(request, 'You unliked the blog.')
+    else:
+        Like.objects.create(blog=blog, user=request.user)  # Like the blog
+        messages.success(request, 'You liked the blog.')
+
+    return redirect('view_blog', pk=pk)
+
 
 # Share Blog
 @login_required
 def share_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
-    # Logic to share the blog (this could be sending an email, sharing to social media, etc.)
-    # For simplicity, we'll just show a success message
+    # Placeholder logic for sharing
     messages.success(request, 'Blog shared successfully.')
     return redirect('view_blog', pk=blog.pk)
+
 
 # User Registration View
 def register_view(request):
@@ -82,6 +117,7 @@ def register_view(request):
         form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
 
+
 # Profile View
 @login_required
 def profile_view(request):
@@ -97,6 +133,7 @@ def profile_view(request):
     else:
         form = UserProfileForm(instance=profile)
     return render(request, 'profile.html', {'form': form})
+
 
 # Add Blog View
 @login_required
@@ -115,6 +152,7 @@ def add_blog_view(request):
         form = BlogForm()
     return render(request, 'add_blog.html', {'form': form})
 
+
 # Update Blog View
 @login_required
 def update_blog_view(request, pk):
@@ -130,6 +168,7 @@ def update_blog_view(request, pk):
     else:
         form = BlogForm(instance=blog)
     return render(request, 'update_blog.html', {'form': form, 'blog': blog})
+
 
 # Delete Blog View
 @login_required

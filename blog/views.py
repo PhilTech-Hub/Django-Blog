@@ -189,3 +189,7 @@ def delete_blog_view(request, pk):
 def featured_blogs(request):
     blogs = Blog.objects.filter(is_featured=True).values('title', 'description', 'poster', 'likes', 'comments')
     return JsonResponse(list(blogs), safe=False)
+
+    if not blogs:
+        return JsonResponse({"error": "No featured blogs found"}, status=404)
+

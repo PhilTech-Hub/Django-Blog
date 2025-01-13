@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Blog, UserProfile, Comment, Like
+from .models import Blog, Comment, Like
 from .forms import UserProfileForm, BlogForm, UserRegistrationForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Count, Q
+from django.http import JsonResponse
+
 
 
 # Home Page View
@@ -179,3 +181,11 @@ def delete_blog_view(request, pk):
         messages.success(request, 'Blog post deleted successfully.')
         return redirect('home')
     return render(request, 'delete_blog.html', {'blog': blog})
+
+
+
+
+
+def featured_blogs(request):
+    blogs = Blog.objects.filter(is_featured=True).values('title', 'description', 'poster', 'likes', 'comments')
+    return JsonResponse(list(blogs), safe=False)
